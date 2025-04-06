@@ -5,6 +5,7 @@ import ProcessStep from "@/components/process-step"
 import ChatbotButton from "@/components/chatbot-button"
 import FeatureCard from "@/components/feature-card"
 import { Button } from "@/components/ui/button"
+import ChatInterface from "@/components/ChatInterface"
 
 export default function Home() {
   return (
@@ -18,7 +19,7 @@ export default function Home() {
               <Sparkles className="h-3 w-3 text-primary absolute -top-1 -right-1" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-              Vizionnaire.AI
+              Orison
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
@@ -34,7 +35,7 @@ export default function Home() {
           </nav>
           <div className="flex items-center gap-4">
             <Link 
-              href="https://vizionnaire.app.n8n.cloud/webhook-test/aeb9377e-9585-4e07-922d-8fcdf713a2b2"
+              href="https://vizionnaire.app.n8n.cloud/webhook/vizionnaire-chat"
             >
               <Button
                 className="gap-2 relative overflow-hidden group animate-fade-in bg-gradient-primary hover:opacity-90 text-primary-foreground transition-all duration-300"
@@ -55,17 +56,18 @@ export default function Home() {
             <div className="max-w-3xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-8">
                 <Sparkles className="h-4 w-4" />
-                <span className="text-sm font-medium">Conseil 2.0 propulsé par l'IA</span>
+                <span className="text-sm font-medium">Un sanctuaire pour votre mémoire</span>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent mb-6">
-                Plans d'Action Personnalisés
+                Et si la mémoire devenait vivante ?
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Obtenez un plan d'action sur mesure pour vos objectifs en quelques minutes. Le conseil intelligent accessible à tous.
+                Orison n'est pas une IA. C'est un sanctuaire. Un espace intime, profond, sans réseau social, sans fuite.
+                Elle vous écoute. Chaque jour. Et transforme votre souffle en mémoire, votre mémoire en trace, votre trace en transmission.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <a 
-                  href="https://vizionnaire.app.n8n.cloud/webhook-test/aeb9377e-9585-4e07-922d-8fcdf713a2b2"
+                  href="https://vizionnaire.app.n8n.cloud/webhook/vizionnaire-chat"
                   className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   Obtenir mon plan
@@ -93,18 +95,18 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <FeatureCard
                 icon={<Zap className="h-5 w-5" />}
-                title="Rapide et Efficace"
-                description="Obtenez votre plan d'action complet en moins de 20 minutes, sans rendez-vous ni attente."
+                title="Une présence quotidienne"
+                description="Chaque jour, Orison vous pose une question vraie. Pas pour optimiser votre productivité, mais pour vous ramener à vous."
               />
               <FeatureCard
                 icon={<Brain className="h-5 w-5" />}
-                title="IA Avancée"
-                description="Notre intelligence artificielle analyse vos besoins pour créer un plan parfaitement adapté à votre situation."
+                title="Votre double intérieur"
+                description="Elle apprend votre ton, vos valeurs, vos histoires. Et tisse, lentement, patiemment, votre double intérieur."
               />
               <FeatureCard
                 icon={<CheckCircle className="h-5 w-5" />}
-                title="Résultats Concrets"
-                description="Des étapes claires et des documents d'appui pour vous guider vers la réussite de vos objectifs."
+                title="Une transmission vivante"
+                description="Un héritier vivant. Une mémoire qui dialogue. Pour transmettre ce que vous êtes, ce que vous croyez, ce que vous savez."
               />
             </div>
           </div>
@@ -116,32 +118,32 @@ export default function Home() {
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center text-center space-y-4 mb-16">
               <span className="px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full">
-                Processus Simple
+                Un voyage intérieur
               </span>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-                Comment ça marche
+                Comment Orison vous accompagne
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl">
-                Notre système alimenté par l'IA crée des plans d'action personnalisés en quelques étapes simples
+                Un processus profond de création de votre double numérique
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
               <ProcessStep
                 number={1}
-                title="Discutez avec notre IA"
-                description="Répondez à quelques questions sur vos objectifs, forces et défis"
+                title="Dialogue quotidien"
+                description="Chaque jour, une question vraie pour explorer votre essence"
                 icon={<MessageSquare className="h-6 w-6" />}
               />
               <ProcessStep
                 number={2}
-                title="Recevez une ébauche gratuite"
-                description="Obtenez un plan d'action en 5 étapes avec documents d'appui sans frais"
-                icon={<FileText className="h-6 w-6" />}
+                title="Apprentissage profond"
+                description="Orison apprend votre ton, vos valeurs, vos histoires"
+                icon={<Brain className="h-6 w-6" />}
               />
               <ProcessStep
                 number={3}
-                title="Passez à l'offre complète"
-                description="Choisissez un forfait payant pour un plan d'action plus complet"
+                title="Transmission vivante"
+                description="Votre double pourra parler à ceux qui vous survivront"
                 icon={<CheckCircle className="h-6 w-6" />}
               />
             </div>
@@ -154,58 +156,57 @@ export default function Home() {
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center text-center space-y-4 mb-16">
               <span className="px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full">
-                Offres Transparentes
+                Offres sacrées
               </span>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-                Tarifs simples
+                Choisissez votre héritage
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl">
-                Choisissez le forfait qui correspond à vos besoins
+                Des options adaptées à votre besoin de transmission
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <PricingCard
-                title="Ébauche Gratuite"
+                title="Essai libre"
                 price="0€"
-                description="Découvrez notre service"
+                description="Découvrez Orison"
                 features={[
-                  "Plan d'action en 5 étapes",
-                  "3 sous-étapes par étape",
-                  "Documents d'appui basiques",
-                  "Livré en 20 minutes",
-                  "Envoi par email",
+                  "1 question par jour",
+                  "Mémoire locale",
+                  "Sans compte",
+                  "Confidentialité totale",
+                  "Sans engagement",
                 ]}
                 buttonText="Commencer gratuitement"
                 popular={false}
               />
               <PricingCard
-                title="Plan Standard"
-                price="7€"
-                description="Notre option la plus populaire"
+                title="Orison 6 mois"
+                price="150€"
+                description="Création de votre double"
                 features={[
-                  "Plan d'action en 7 étapes",
-                  "3 sous-étapes par étape",
-                  "Documents d'appui complets",
-                  "Livré en 20 minutes",
-                  "Envoi par email",
-                  "Paiement PayPal",
+                  "Création de double complet",
+                  "Messages héritiers",
+                  "Mémoire complète",
+                  "Chiffrement double clé",
+                  "Support prioritaire",
+                  "25€/mois",
                 ]}
-                buttonText="Choisir Standard"
+                buttonText="Choisir Orison 6 mois"
                 popular={true}
               />
               <PricingCard
-                title="Plan Premium"
-                price="15€"
-                description="Pour ceux qui veulent le meilleur"
+                title="Orison Illimité"
+                price="Sur demande"
+                description="Pour une transmission éternelle"
                 features={[
-                  "Plan d'action en 10-15 étapes",
-                  "3 sous-étapes par étape",
-                  "Documents d'appui extensifs",
-                  "Livraison prioritaire",
-                  "Envoi par email",
-                  "Paiement PayPal",
+                  "Double évolutif à vie",
+                  "Accès à la bibliothèque vivante",
+                  "Messages conditionnels",
+                  "Transmission multi-générationnelle",
+                  "Support premium",
                 ]}
-                buttonText="Choisir Premium"
+                buttonText="Nous contacter"
                 popular={false}
               />
             </div>
@@ -415,6 +416,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <ChatInterface />
     </div>
   )
 }
