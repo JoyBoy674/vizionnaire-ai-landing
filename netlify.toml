@@ -1,15 +1,14 @@
 [build]
   command = "npm run build"
-  publish = "out"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_N8N_WEBHOOK_URL = "https://vizionnaire.app.n8n.cloud/webhook/orison-chat"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200 
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[build.environment]
-  NEXT_USE_NETLIFY_EDGE = "true"
-  NEXT_PRIVATE_TARGET = "server" 
