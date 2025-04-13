@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquare, Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout, Menu, X } from "lucide-react"
+import { Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout, Menu, X } from "lucide-react"
 import { Button } from "./components/ui/button"
-import ChatInterface from "./components/ChatInterface"
 import Link from "next/link"
 import Image from 'next/image'
 
@@ -31,14 +30,14 @@ export default function Home() {
       <header className="border-b border-primary/10 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-4">
-            <div className="relative w-12 h-12">
+            <div className="relative w-8 h-8 md:w-12 md:h-12">
               <img
                 src="/logo.png"
                 alt="Vizionnaire Logo"
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="text-2xl font-serif tracking-wide">
+            <span className="text-xl md:text-2xl font-serif tracking-wide">
               Vizionnaire
             </span>
           </Link>
@@ -67,13 +66,6 @@ export default function Home() {
             >
               Notre Vision
             </Link>
-            <Button
-              onClick={() => document.getElementById('chat-interface')?.scrollIntoView({ behavior: 'smooth' })}
-              className="gap-2 relative overflow-hidden group bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground"
-            >
-              <MessageSquare className="h-4 w-4 group-hover:scale-110 transition-transform duration-500" />
-              <span className="relative z-10">Commencer</span>
-            </Button>
           </nav>
         </div>
 
@@ -95,16 +87,6 @@ export default function Home() {
               >
                 Notre Vision
               </Link>
-              <Button
-                onClick={() => {
-                  document.getElementById('chat-interface')?.scrollIntoView({ behavior: 'smooth' })
-                  setIsMenuOpen(false)
-                }}
-                className="gap-2 relative overflow-hidden group bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground w-full"
-              >
-                <MessageSquare className="h-4 w-4 group-hover:scale-110 transition-transform duration-500" />
-                <span className="relative z-10">Commencer</span>
-              </Button>
             </div>
           </div>
         )}
@@ -401,7 +383,6 @@ export default function Home() {
                   Version gratuite - Aucune carte bancaire requise
                 </p>
               </div>
-              <ChatInterface />
             </div>
           </div>
         </section>

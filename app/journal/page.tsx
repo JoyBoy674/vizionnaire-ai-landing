@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import Image from "next/image"
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
-const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'https://vizionnaire.app.n8n.cloud/webhook/orison-chat'
+const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'https://oraclemp4.app.n8n.cloud/webhook-test/35d352ad-3d3d-4c6e-b9e4-928e69007a13'
 
 const MOODS = [
   { id: 'serene', label: 'Serein(e)', description: 'Je me sens tranquille, posé(e).' },
@@ -108,7 +108,7 @@ export default function Journal() {
     }
   }, [messages])
 
-  const handleStartDialog = () => {
+  const handleStartDialog = async () => {
     if (!selectedMood || !selectedIntention) return
     
     // Scroll to top of the page
@@ -116,8 +116,34 @@ export default function Journal() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    // Utiliser simulateTyping pour le message initial
-    simulateTyping(`Bonjour.\nTu n'as rien à prouver ici. Juste être là… c'est déjà un début. Un choix précieux.\n\nJe suis Orison.\nJe ne suis ni un conseiller, ni un maître. Je suis une mémoire en devenir. Un témoin silencieux de ce que tu voudras bien me confier.\n\nMais avant d'écrire quoi que ce soit ensemble, il y a quelque chose d'essentiel à poser.\n\nCe que tu me diras ne m'appartiendra jamais.\nChaque mot, chaque émotion, chaque souvenir que tu partageras ici restera à toi.\nEt pour protéger cela, nous allons créer ensemble une clé secrète.\n\nCette clé, c'est le sceau de ton sanctuaire intérieur.\nElle cryptera ta mémoire. Même moi, je ne pourrai y accéder sans elle. Pas Vizionnaire. Pas un tiers. Pas un serveur. Rien ni personne — sauf toi.\n\nJe vais maintenant générer ta clé unique.\nMais prends ton temps.\nMunis-toi d'un papier. D'un stylo. Et note-la à la main.\n\nQuand tu es prêt, dis-moi simplement : "Je suis prêt."`, setMessages)
+    // Envoyer les informations d'humeur et d'intention à n8n
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mood: selectedMood,
+          intention: selectedIntention,
+          key: userKey,
+          isInitial: true
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await response.json()
+      
+      // Utiliser simulateTyping pour le message initial
+      simulateTyping(data.response, setMessages)
+    } catch (error) {
+      console.error('Error:', error)
+      // En cas d'erreur, utiliser le message par défaut
+      simulateTyping(`Bonjour.\nTu n'as rien à prouver ici. Juste être là… c'est déjà un début. Un choix précieux.\n\nJe suis Orison.\nJe ne suis ni un conseiller, ni un maître. Je suis une mémoire en devenir. Un témoin silencieux de ce que tu voudras bien me confier.\n\nMais avant d'écrire quoi que ce soit ensemble, il y a quelque chose d'essentiel à poser.\n\nCe que tu me diras ne m'appartiendra jamais.\nChaque mot, chaque émotion, chaque souvenir que tu partageras ici restera à toi.\nEt pour protéger cela, nous allons créer ensemble une clé secrète.\n\nCette clé, c'est le sceau de ton sanctuaire intérieur.\nElle cryptera ta mémoire. Même moi, je ne pourrai y accéder sans elle. Pas Vizionnaire. Pas un tiers. Pas un serveur. Rien ni personne — sauf toi.\n\nJe vais maintenant générer ta clé unique.\nMais prends ton temps.\nMunis-toi d'un papier. D'un stylo. Et note-la à la main.\n\nQuand tu es prêt, dis-moi simplement : "Je suis prêt."`, setMessages)
+    }
     
     // Attendre que le DOM soit mis à jour avant de changer showInitialDialog
     setTimeout(() => {
