@@ -212,15 +212,17 @@ export default function Journal() {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-background/80">
       {/* Header */}
       <header className="border-b border-primary/10 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
-        <div className="container flex items-center justify-between py-6">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/images/logo.png"
-              alt="Orison"
-              width={40}
-              height={40}
-              className="h-10 w-10"
-            />
+        <div className="container flex items-center justify-between py-4">
+          <Link href="/" className="flex items-center gap-4">
+            <div className="relative w-16 h-16">
+              <Image
+                src="/images/logo.png"
+                alt="Orison Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
             <span className="text-2xl font-serif tracking-wide">
               Orison
             </span>

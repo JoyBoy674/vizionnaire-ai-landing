@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquare, Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout } from "lucide-react"
+import { MessageSquare, Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout, Menu, X } from "lucide-react"
 import { Button } from "./components/ui/button"
 import ChatInterface from "./components/ChatInterface"
 import Link from "next/link"
@@ -9,6 +9,7 @@ import Image from 'next/image'
 
 export default function Home() {
   const [expandedFeatures, setExpandedFeatures] = useState<Set<string>>(new Set())
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleFeature = (feature: string) => {
     setExpandedFeatures(prev => {
@@ -30,20 +31,29 @@ export default function Home() {
       <header className="border-b border-primary/10 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container flex items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-4">
-            <div className="relative w-24 h-24">
-              <Image
-                src="/images/logo.png"
+            <div className="relative w-12 h-12">
+              <img
+                src="/logo.png"
                 alt="Vizionnaire Logo"
-                fill
-                className="object-contain"
-                priority
+                className="w-full h-full object-contain"
               />
             </div>
-            <span className="text-3xl font-serif tracking-wide">
+            <span className="text-2xl font-serif tracking-wide">
               Vizionnaire
             </span>
           </Link>
           
+          {/* Menu mobile */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+
+          {/* Menu desktop */}
           <nav className="hidden md:flex items-center gap-8">
             <Link 
               href="/documentation" 
@@ -66,6 +76,38 @@ export default function Home() {
             </Button>
           </nav>
         </div>
+
+        {/* Menu mobile ouvert */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-primary/10">
+            <div className="container py-4 flex flex-col gap-4">
+              <Link 
+                href="/documentation" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Documentation
+              </Link>
+              <Link 
+                href="/notre-vision" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Notre Vision
+              </Link>
+              <Button
+                onClick={() => {
+                  document.getElementById('chat-interface')?.scrollIntoView({ behavior: 'smooth' })
+                  setIsMenuOpen(false)
+                }}
+                className="gap-2 relative overflow-hidden group bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground w-full"
+              >
+                <MessageSquare className="h-4 w-4 group-hover:scale-110 transition-transform duration-500" />
+                <span className="relative z-10">Commencer</span>
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">
@@ -372,11 +414,10 @@ export default function Home() {
             <div className="flex flex-col items-center gap-4">
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12">
-                  <Image
-                    src="/images/logo.png"
+                  <img
+                    src="/logo.png"
                     alt="Vizionnaire Logo"
-                    fill
-                    className="object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <span className="text-2xl font-serif tracking-wide">
