@@ -41,23 +41,40 @@ export default function Chat() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
 
     try {
-      const response = await fetch('https://vizionnaire.app.n8n.cloud/webhook/orison-chat', {
+      console.log('Envoi du message au serveur...')
+      const response = await fetch('https://vizionnaireai.app.n8n.cloud/webhook-test/a9b964b5-c3cd-42e6-b47a-2952961acc83', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ 
+          message: userMessage,
+          timestamp: new Date().toISOString()
+        })
       })
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Erreur serveur: ${response.status}`)
+      }
+
       const data = await response.json()
+      console.log('Réponse reçue:', data)
       
       // Ajouter la réponse de l'assistant
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: data.response || data.message || "Message reçu mais pas de réponse spécifique."
+      }])
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Erreur détaillée:', error)
+      if (error instanceof Error) {
+        console.error('Type d\'erreur:', error.name)
+        console.error('Message d\'erreur:', error.message)
+      }
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "Je suis désolé, j'ai rencontré une difficulté. Pouvons-nous réessayer ?"
+        content: "Je suis désolé, j'ai rencontré une erreur technique. Détails : " + (error instanceof Error ? error.message : String(error))
       }])
     } finally {
       setIsLoading(false)

@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/landing',
-  output: 'export',
+  output: process.env.NODE_ENV === 'development' ? undefined : 'standalone',
   images: {
     unoptimized: true,
   },
-  trailingSlash: true,
+  experimental: {
+    optimizeCss: true,
+  }
 }
 
 export default nextConfig 

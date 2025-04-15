@@ -38,16 +38,22 @@ export default function ChatInterface() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('https://vizionnaire.app.n8n.cloud/webhook/orison-chat', {
+      console.log('Envoi de la requête au webhook avec:', { message: userMessage, question: FUNDAMENTAL_QUESTIONS[currentQuestionIndex] })
+      const response = await fetch('/api/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
           message: userMessage,
-          question: FUNDAMENTAL_QUESTIONS[currentQuestionIndex]
+          question: FUNDAMENTAL_QUESTIONS[currentQuestionIndex],
+          timestamp: new Date().toISOString()
         }),
       })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
 
       const data = await response.json()
       setMessages(prev => [...prev, { type: 'ai', content: data.response }])

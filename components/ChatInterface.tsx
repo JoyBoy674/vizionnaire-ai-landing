@@ -20,7 +20,7 @@ export default function ChatInterface() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('https://vizionnaire.app.n8n.cloud/webhook/vizionnaire-chat', {
+      const response = await fetch('https://vizionnaireai.app.n8n.cloud/webhook-test/a9b964b5-c3cd-42e6-b47a-2952961acc83', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

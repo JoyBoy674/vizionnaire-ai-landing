@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout, Menu, X } from "lucide-react"
+import { Sparkles, Heart, Eye, Archive, Lock, Gift, Star, Feather, ChevronDown, Headphones, BookOpen, Key, Shield, Sprout, Menu, X, MessageSquare } from "lucide-react"
 import { Button } from "./components/ui/button"
 import Link from "next/link"
 import Image from 'next/image'
@@ -41,38 +41,55 @@ export default function Home() {
               Vizionnaire
             </span>
           </Link>
-          
-          {/* Menu mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
 
-          {/* Menu desktop */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link 
-              href="/documentation" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Documentation
+          <div className="flex items-center gap-8">
+            {/* Menu mobile */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+
+            {/* Menu desktop */}
+            <nav className="hidden md:flex items-center gap-8">
+              <Link 
+                href="/documentation" 
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Documentation
+              </Link>
+              <Link 
+                href="/notre-vision" 
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Notre Vision
+              </Link>
+            </nav>
+
+            <Link href="#chat-interface" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Button variant="default" size="lg" className="gap-2 bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground">
+                <MessageSquare className="h-5 w-5" />
+                <span>Commencer</span>
+              </Button>
             </Link>
-            <Link 
-              href="/notre-vision" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Notre Vision
-            </Link>
-          </nav>
+          </div>
         </div>
 
         {/* Menu mobile ouvert */}
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-primary/10">
             <div className="container py-4 flex flex-col gap-4">
+              <Link 
+                href="/journal" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 flex items-center gap-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <MessageSquare className="h-4 w-4" />
+                <span>Commencer</span>
+              </Link>
               <Link 
                 href="/documentation" 
                 className="text-muted-foreground hover:text-foreground transition-colors py-2"
@@ -412,6 +429,17 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <div className="container relative">
+        <div className="flex flex-col items-center gap-8">
+          <Link href="#chat-interface" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Button variant="ghost" size="lg" className="gap-2">
+              <MessageSquare className="h-5 w-5" />
+              <span>Commencer</span>
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

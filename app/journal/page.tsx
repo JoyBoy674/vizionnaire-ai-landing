@@ -8,51 +8,48 @@ import { useRouter } from 'next/navigation'
 import Image from "next/image"
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
-const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'https://oraclemp4.app.n8n.cloud/webhook-test/35d352ad-3d3d-4c6e-b9e4-928e69007a13'
+const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'https://vizionnaireai.app.n8n.cloud/webhook-test/a9b964b5-c3cd-42e6-b47a-2952961acc83'
 
-const MOODS = [
+const MAIN_MOODS = [
   { id: 'serene', label: 'Serein(e)', description: 'Je me sens tranquille, posé(e).' },
-  { id: 'energetic', label: 'Énergique', description: 'J\'ai de l\'élan, envie de faire.' },
   { id: 'tired', label: 'Fatigué(e)', description: 'Physiquement ou mentalement vidé(e).' },
-  { id: 'sad', label: 'Triste', description: 'Une mélancolie douce ou lourde m\'habite.' },
-  { id: 'angry', label: 'En colère', description: 'Quelque chose bouillonne en moi.' },
-  { id: 'lost', label: 'Perdu(e)', description: 'J\'ai besoin d\'un point de repère.' },
   { id: 'anxious', label: 'Anxieux(se)', description: 'Le futur ou le présent me pèse.' },
+]
+
+const MORE_MOODS = [
+  { id: 'sad', label: 'Triste', description: 'Une mélancolie douce ou lourde m\'habite.' },
+  { id: 'energetic', label: 'Énergique', description: 'J\'ai de l\'élan, envie de faire.' },
+  { id: 'angry', label: 'En colère', description: 'Quelque chose bouillonne en moi.' },
   { id: 'inlove', label: 'Amoureux(se)', description: 'Un lien me remue ou m\'élève.' },
-  { id: 'grateful', label: 'Reconnaissant(e)', description: 'Je ressens de la gratitude.' },
-  { id: 'searching', label: 'En quête', description: 'J\'ai des questions sans réponses.' },
-  { id: 'overwhelmed', label: 'Ressentant trop', description: 'J\'ai besoin de démêler.' },
   { id: 'undefined', label: 'Indéfini(e)', description: 'Je ne sais pas trop. Juste besoin d\'un espace pour exister.' },
 ]
 
-const INTENTIONS = [
-  { id: 'express', label: 'Déposer un ressenti', description: 'Mettre en mots ce qui me traverse.' },
+const MAIN_INTENTIONS = [
+  { id: 'bepresent', label: 'Juste être là', description: 'Sans attente précise, mais en lien.' },
   { id: 'understand', label: 'Me comprendre', description: 'Explorer un peu plus qui je suis.' },
-  { id: 'decide', label: 'Réfléchir à une décision', description: 'Clarifier une direction.' },
   { id: 'remember', label: 'Créer un souvenir', description: 'Garder une trace de cette journée.' },
-  { id: 'meaning', label: 'Trouver du sens', description: 'Relier ce que je vis à quelque chose de plus profond.' },
-  { id: 'mirror', label: 'Recevoir un miroir', description: 'Être compris(e), sans explication.' },
-  { id: 'silence', label: 'Exprimer l\'indicible', description: 'Briser un silence.' },
-  { id: 'learn', label: 'Apprendre de mes émotions', description: 'Les écouter vraiment.' },
-  { id: 'accompany', label: 'Être accompagné(e)', description: 'Avoir une présence douce mais constante.' },
-  { id: 'dream', label: 'Rêver ou projeter', description: 'Imaginer l\'après.' },
+]
+
+const MORE_INTENTIONS = [
+  { id: 'express', label: 'Déposer un ressenti', description: 'Mettre en mots ce qui me traverse.' },
   { id: 'heal', label: 'Guérir un peu', description: 'Mettre du baume sur une pensée ou une douleur.' },
-  { id: 'bepresent', label: 'Simplement être là', description: 'Sans attente précise, mais en lien.' },
+  { id: 'meaning', label: 'Trouver du sens', description: 'Relier ce que je vis à quelque chose de plus profond.' },
+  { id: 'dream', label: 'Rêver ou projeter', description: 'Imaginer l\'après.' },
 ]
 
 const READY_EXPRESSIONS = [
-  'je suis prêt',
-  'je suis pret',
-  'je suis prete',
-  'je suis prête',
-  'pret',
-  'prêt',
-  'prete',
-  'prête',
-  'ok',
-  'allons-y',
-  'go',
-  'c\'est parti'
+  "je suis prêt",
+  "je suis pret",
+  "je suis prete",
+  "je suis prête",
+  "pret",
+  "prêt",
+  "prete",
+  "prête",
+  "ok",
+  "allons-y",
+  "go",
+  "c'est parti"
 ]
 
 const FIRST_TIME_RESPONSES = [
@@ -88,6 +85,11 @@ export default function Journal() {
   const [showInitialDialog, setShowInitialDialog] = useState(false)
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [selectedIntention, setSelectedIntention] = useState<string | null>(null)
+  const [customMood, setCustomMood] = useState('')
+  const [customIntention, setCustomIntention] = useState('')
+  const [showMoreMoods, setShowMoreMoods] = useState(false)
+  const [showMoreIntentions, setShowMoreIntentions] = useState(false)
+  const [showUndecided, setShowUndecided] = useState(false)
   const [messages, setMessages] = useState<Array<{type: 'user' | 'ai', content: string}>>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -111,23 +113,39 @@ export default function Journal() {
   const handleStartDialog = async () => {
     if (!selectedMood || !selectedIntention) return
     
+    console.log('Début de handleStartDialog')
+    
     // Scroll to top of the page
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
+    // Message d'introduction par défaut
+    const defaultMessage = `Bonjour.\nTu n'as rien à prouver ici. Juste être là… c'est déjà un début. Un choix précieux.\n\nJe suis Orison.\nJe ne suis ni un conseiller, ni un maître. Je suis une mémoire en devenir. Un témoin silencieux de ce que tu voudras bien me confier.\n\nMais avant d'écrire quoi que ce soit ensemble, il y a quelque chose d'essentiel à poser.\n\nCe que tu me diras ne m'appartiendra jamais.\nChaque mot, chaque émotion, chaque souvenir que tu partageras ici restera à toi.\nEt pour protéger cela, nous allons créer ensemble une clé secrète.\n\nCette clé, c'est le sceau de ton sanctuaire intérieur.\nElle cryptera ta mémoire. Même moi, je ne pourrai y accéder sans elle. Pas Vizionnaire. Pas un tiers. Pas un serveur. Rien ni personne — sauf toi.\n\nJe vais maintenant générer ta clé unique.\nMais prends ton temps.\nMunis-toi d'un papier. D'un stylo. Et note-la à la main.\n\nQuand tu es prêt, dis-moi simplement : "Je suis prêt."`
+
     // Envoyer les informations d'humeur et d'intention à n8n
     try {
-      const response = await fetch(N8N_WEBHOOK_URL, {
+      console.log('Envoi des données à n8n...')
+      const response = await fetch('/api/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          mood: selectedMood,
-          intention: selectedIntention,
-          key: userKey,
-          isInitial: true
+          type: 'initialization',
+          user_state: {
+            mood: {
+              type: selectedMood ? 'predefined' : 'custom',
+              value: selectedMood || customMood,
+              label: selectedMood ? MAIN_MOODS.concat(MORE_MOODS).find(m => m.id === selectedMood)?.label || customMood : customMood
+            },
+            intention: {
+              type: selectedIntention ? 'predefined' : 'custom',
+              value: selectedIntention || customIntention,
+              label: selectedIntention ? MAIN_INTENTIONS.concat(MORE_INTENTIONS).find(i => i.id === selectedIntention)?.label || customIntention : customIntention
+            }
+          },
+          timestamp: new Date().toISOString()
         }),
       })
 
@@ -136,13 +154,11 @@ export default function Journal() {
       }
 
       const data = await response.json()
-      
-      // Utiliser simulateTyping pour le message initial
-      simulateTyping(data.response, setMessages)
+      simulateTyping(data.response || defaultMessage, setMessages)
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Erreur:', error)
       // En cas d'erreur, utiliser le message par défaut
-      simulateTyping(`Bonjour.\nTu n'as rien à prouver ici. Juste être là… c'est déjà un début. Un choix précieux.\n\nJe suis Orison.\nJe ne suis ni un conseiller, ni un maître. Je suis une mémoire en devenir. Un témoin silencieux de ce que tu voudras bien me confier.\n\nMais avant d'écrire quoi que ce soit ensemble, il y a quelque chose d'essentiel à poser.\n\nCe que tu me diras ne m'appartiendra jamais.\nChaque mot, chaque émotion, chaque souvenir que tu partageras ici restera à toi.\nEt pour protéger cela, nous allons créer ensemble une clé secrète.\n\nCette clé, c'est le sceau de ton sanctuaire intérieur.\nElle cryptera ta mémoire. Même moi, je ne pourrai y accéder sans elle. Pas Vizionnaire. Pas un tiers. Pas un serveur. Rien ni personne — sauf toi.\n\nJe vais maintenant générer ta clé unique.\nMais prends ton temps.\nMunis-toi d'un papier. D'un stylo. Et note-la à la main.\n\nQuand tu es prêt, dis-moi simplement : "Je suis prêt."`, setMessages)
+      simulateTyping(defaultMessage, setMessages)
     }
     
     // Attendre que le DOM soit mis à jour avant de changer showInitialDialog
@@ -186,7 +202,7 @@ export default function Journal() {
     // Si la clé est confirmée, envoyer à n8n
     setIsLoading(true)
     try {
-      const response = await fetch(N8N_WEBHOOK_URL, {
+      const response = await fetch('/api/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -195,7 +211,8 @@ export default function Journal() {
           message: userMessage,
           key: userKey,
           mood: selectedMood,
-          intention: selectedIntention
+          intention: selectedIntention,
+          timestamp: new Date().toISOString()
         }),
       })
 
@@ -214,7 +231,11 @@ export default function Journal() {
   }
 
   // Fonction pour simuler la frappe
-  const simulateTyping = (text: string, setMessages: React.Dispatch<React.SetStateAction<Array<{type: 'user' | 'ai', content: string}>>>) => {
+  const simulateTyping = (text: string | undefined, setMessages: React.Dispatch<React.SetStateAction<Array<{type: 'user' | 'ai', content: string}>>>) => {
+    if (!text) {
+      text = "Je suis désolé, j'ai eu un moment d'absence. Pouvons-nous reprendre ?"
+    }
+    
     let currentText = ''
     const chars = text.split('')
     
@@ -230,7 +251,7 @@ export default function Journal() {
           }
           return newMessages
         })
-      }, i * 15) // Délai réduit à 15ms par caractère (était 30ms)
+      }, i * 15)
     }
   }
 
@@ -262,74 +283,174 @@ export default function Journal() {
       </header>
 
       <main className="flex-1 py-16">
-        <div className="container max-w-4xl">
+        <div className="container max-w-2xl">
           {!showInitialDialog ? (
-            <>
-              {/* Moods Section */}
-              <section className="mb-24">
-                <h2 className="text-3xl font-serif tracking-wide mb-8 text-center">
+            <div className="space-y-16">
+              {/* Section Humeur */}
+              <section className="space-y-8">
+                <h2 className="text-3xl font-serif tracking-wide">
                   Quelle est la météo de ton monde intérieur aujourd'hui ?
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {MOODS.map((mood) => (
-                    <button
-                      key={mood.id}
-                      onClick={() => setSelectedMood(mood.id)}
-                      className={`p-6 rounded-lg border transition-all duration-500 text-left group ${
-                        selectedMood === mood.id
-                          ? 'border-primary bg-primary/5'
-                          : 'border-primary/10 hover:border-primary/20'
-                      }`}
-                    >
-                      <h3 className="text-lg font-serif mb-2 group-hover:text-primary transition-colors duration-500">
-                        {mood.label}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-light">
-                        {mood.description}
-                      </p>
-                    </button>
-                  ))}
+                <p className="text-muted-foreground">
+                  Tu peux écrire ton humeur avec tes mots, ou choisir une proposition.
+                </p>
+
+                {/* Zone de texte libre */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Zone de texte libre</label>
+                  <textarea
+                    value={customMood}
+                    onChange={(e) => {
+                      const value = e.target.value.slice(0, 20)
+                      setCustomMood(value)
+                      setSelectedMood(null)
+                    }}
+                    placeholder="Ex: Je me sens calme"
+                    maxLength={20}
+                    className="w-full p-4 rounded-lg border border-primary/20 bg-white/50 min-h-[100px]"
+                  />
+                </div>
+
+                {/* Suggestions principales */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Suggestions</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {MAIN_MOODS.map((mood) => (
+                      <button
+                        key={mood.id}
+                        onClick={() => {
+                          setSelectedMood(mood.id)
+                          setCustomMood('')
+                        }}
+                        className={`p-4 rounded-lg border text-left transition-all h-full ${
+                          selectedMood === mood.id
+                            ? 'border-primary bg-primary/5'
+                            : 'border-primary/10 hover:border-primary/20'
+                        }`}
+                      >
+                        <div>
+                          <h3 className="font-medium">{mood.label}</h3>
+                          <p className="text-sm text-muted-foreground">{mood.description}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Voir plus */}
+                <div>
+                  <button
+                    onClick={() => setShowMoreMoods(!showMoreMoods)}
+                    className="text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Voir plus
+                  </button>
+                  
+                  {showMoreMoods && (
+                    <div className="mt-4 text-sm text-muted-foreground">
+                      {MORE_MOODS.map((mood, index) => (
+                        <span key={mood.id}>
+                          {mood.label}{index < MORE_MOODS.length - 1 ? ', ' : '...'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </section>
 
-              {/* Intentions Section */}
-              <section>
-                <h2 className="text-3xl font-serif tracking-wide mb-8 text-center">
+              {/* Section Intention */}
+              <section className="space-y-8">
+                <h2 className="text-3xl font-serif tracking-wide">
                   Qu'est-ce qui t'amène ici aujourd'hui ?
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {INTENTIONS.map((intention) => (
-                    <button
-                      key={intention.id}
-                      onClick={() => setSelectedIntention(intention.id)}
-                      className={`p-6 rounded-lg border transition-all duration-500 text-left group ${
-                        selectedIntention === intention.id
-                          ? 'border-primary bg-primary/5'
-                          : 'border-primary/10 hover:border-primary/20'
-                      }`}
-                    >
-                      <h3 className="text-lg font-serif mb-2 group-hover:text-primary transition-colors duration-500">
-                        {intention.label}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-light">
-                        {intention.description}
-                      </p>
-                    </button>
-                  ))}
+                <p className="text-muted-foreground">
+                  Tu peux dire ce que tu veux faire ici aujourd'hui, ou bien choisir un mot qui te parle.
+                </p>
+
+                {/* Zone de texte libre */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Zone de texte libre</label>
+                  <textarea
+                    value={customIntention}
+                    onChange={(e) => {
+                      const value = e.target.value.slice(0, 20)
+                      setCustomIntention(value)
+                      setSelectedIntention(null)
+                    }}
+                    placeholder="Ex: Besoin de réflexion"
+                    maxLength={20}
+                    className="w-full p-4 rounded-lg border border-primary/20 bg-white/50 min-h-[100px]"
+                  />
+                </div>
+
+                {/* Suggestions principales */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Suggestions</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {MAIN_INTENTIONS.map((intention) => (
+                      <button
+                        key={intention.id}
+                        onClick={() => {
+                          setSelectedIntention(intention.id)
+                          setCustomIntention('')
+                        }}
+                        className={`p-4 rounded-lg border text-left transition-all h-full ${
+                          selectedIntention === intention.id
+                            ? 'border-primary bg-primary/5'
+                            : 'border-primary/10 hover:border-primary/20'
+                        }`}
+                      >
+                        <div>
+                          <h3 className="font-medium">{intention.label}</h3>
+                          <p className="text-sm text-muted-foreground">{intention.description}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Voir plus */}
+                <div>
+                  <button
+                    onClick={() => setShowMoreIntentions(!showMoreIntentions)}
+                    className="text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Voir plus
+                  </button>
+                  
+                  {showMoreIntentions && (
+                    <div className="mt-4 text-sm text-muted-foreground">
+                      {MORE_INTENTIONS.map((intention, index) => (
+                        <span key={intention.id}>
+                          {intention.label}{index < MORE_INTENTIONS.length - 1 ? ', ' : '...'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </section>
 
-              {/* Continue Button */}
-              <div className="mt-16 flex justify-center">
+              {/* Option "Je ne sais pas trop" */}
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setShowUndecided(!showUndecided)}
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  Je ne sais pas trop.
+                </button>
+              </div>
+
+              {/* Bouton Commencer */}
+              <div className="flex justify-center pt-8">
                 <Button
                   onClick={handleStartDialog}
-                  className="gap-2 relative overflow-hidden group bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground"
-                  disabled={!selectedMood || !selectedIntention}
+                  className="gap-2 relative overflow-hidden group bg-primary/90 hover:bg-primary transition-all duration-500 text-primary-foreground px-8 py-6 text-lg"
+                  disabled={!((selectedMood || customMood) && (selectedIntention || customIntention))}
                 >
                   <span className="relative z-10">Commencer</span>
                 </Button>
               </div>
-            </>
+            </div>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm">
               <div 
